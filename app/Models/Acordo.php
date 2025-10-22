@@ -18,7 +18,8 @@ class acordo extends Model
         'local_encontro',
         'categoria_acordo',
         'imagem_acordo',
-        'status_acordo'
+        'status_acordo',
+        'qr_code'
     ];
 
     public function proposta()

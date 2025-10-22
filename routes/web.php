@@ -24,12 +24,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('/excluir/{id}', [ArtigoController::class, 'delete'])->name('artigo.delete');
 
     Route::get('/mep', [PropostaController::class, 'show'])->name('mep');
-    
+
     Route::get('/acceptingfinalpropose/{id}', [AcordoController::class, 'updateStatusAccept']);
     Route::get('/denyingfinalpropose/{id}', [AcordoController::class, 'updateStatusDeny']);
     Route::post('acordo/create/{id}', [AcordoController::class, 'create']);
     Route::get('validarTroca/{id}', [AcordoController::class, 'updateStatusAgree']);
     Route::get('/meusacordos', [AcordoController::class, 'show'])->name('meusacordos');
+
+    Route::get('/validarqrcode/{id}', [AcordoController::class, 'updateStatusAgree'])->name('validarqrcode');
+
 
     Route::get('/chat/{id}', [PropostaController::class, 'showPropose'])->name('view_messages');
     Route::get('/menssagens/{id}', [PropostaController::class, 'showMessage']);
@@ -83,4 +86,4 @@ Route::get('/termos', function () {
     return view('termosdeuso');
 })->name('termos');
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

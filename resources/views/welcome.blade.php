@@ -51,35 +51,35 @@
                         <!--Card do anúncio-->
                         @if($artigo)
                         @foreach($artigo as $artg)
-                            <!-- Verificar o estado do usuário -->
-                            @if($artg->user->status !== 'inativado')
-                                <div class="group my-1 flex w-full max-w-[260px] flex-col overflow-hidden rounded-xl border border-graytt-light shadow-tt bg-white transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-110 duration-300">
-                                    <a href="/viewannounce/{{$artg->id}}">
-                                        <div class="relative mx-3 mt-3 flex h-48 overflow-hidden rounded-xl border-2 border-black">
-                                            @foreach($artg->imagens as $imagem)
-                                                @if($imagem->imagem_principal)
-                                                    <img class="peer absolute top-0 right-0 h-full w-full object-cover" loading="lazy" src="{{ asset($imagem->endereco_imagem) }}">
-                                                @endif
-                                            @endforeach
-                                            @if(isset($artg->imagens[1]))
-                                                <img class="peer absolute top-0 -right-96 h-full w-full object-cover transition-all delay-100 duration-1000 hover:right-0 peer-hover:right-0" src="{{ asset($artg->imagens[1]->endereco_imagem) }}" alt="Imagem do Produto" />
-                                            @endif
-                                        </div>
-                                        <div class="mt-4 px-5 pb-5">
-                                            <p class="truncate lg:text-left lg:mt-2 text-black">{{$artg->nome_artigo}}</p>
-                                            <p class="truncate lg:text-left lg:mt-2 text-stone-400">{{$artg->categoria_artigo}}</p>
-                                            @if($artg->valor_sugerido_artigo)
-                                                <div class="mt-2 flex items-center">
-                                                    <p>
-                                                        <span class="truncate lg:text-left lg:mt-2 text-black">Valor Sugerido:</span>
-                                                        <span class="truncate text-1xl md:text-1xl lg:text-lg ml-2 font-bold text-pinktt">R${{$artg->valor_sugerido_artigo}}</span>
-                                                    </p>
-                                                </div>
-                                            @endif
-                                        </div>
-                                    </a>
+                        <!-- Verificar o estado do usuário -->
+                        @if($artg->user->status !== 'inativado')
+                        <div class="group my-1 flex w-full max-w-[260px] flex-col overflow-hidden rounded-xl border border-graytt-light shadow-tt bg-white transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-110 duration-300">
+                            <a href="/viewannounce/{{$artg->id}}">
+                                <div class="relative mx-3 mt-3 flex h-48 overflow-hidden rounded-xl border-2 border-black">
+                                    @foreach($artg->imagens as $imagem)
+                                    @if($imagem->imagem_principal)
+                                    <img class="peer absolute top-0 right-0 h-full w-full object-cover" loading="lazy" src="{{ asset($imagem->endereco_imagem) }}">
+                                    @endif
+                                    @endforeach
+                                    @if(isset($artg->imagens[1]))
+                                    <img class="peer absolute top-0 -right-96 h-full w-full object-cover transition-all delay-100 duration-1000 hover:right-0 peer-hover:right-0" src="{{ asset($artg->imagens[1]->endereco_imagem) }}" alt="Imagem do Produto" />
+                                    @endif
                                 </div>
-                            @endif
+                                <div class="mt-4 px-5 pb-5">
+                                    <p class="truncate lg:text-left lg:mt-2 text-black">{{$artg->nome_artigo}}</p>
+                                    <p class="truncate lg:text-left lg:mt-2 text-stone-400">{{$artg->categoria_artigo}}</p>
+                                    @if($artg->valor_sugerido_artigo)
+                                    <div class="mt-2 flex items-center">
+                                        <p>
+                                            <span class="truncate lg:text-left lg:mt-2 text-black">Valor Sugerido:</span>
+                                            <span class="truncate text-1xl md:text-1xl lg:text-lg ml-2 font-bold text-pinktt">R${{$artg->valor_sugerido_artigo}}</span>
+                                        </p>
+                                    </div>
+                                    @endif
+                                </div>
+                            </a>
+                        </div>
+                        @endif
                         @endforeach
                         @endif
                     </div>
@@ -87,7 +87,7 @@
                     <div class="flex gap-5 justify-center mt-8">
                         {{ $artigo->links() }}
                     </div>
-                    
+
                 </div>
                 @include('footer')
             </div>
@@ -100,7 +100,9 @@
 
             window.addEventListener('resize', screenResize);
 
-            window.onload = function () { screenResize() } 
+            window.onload = function() {
+                screenResize()
+            }
 
             function screenResize() {
                 mt_paralax.style.marginTop = paralax.offsetHeight - 32 + "px";

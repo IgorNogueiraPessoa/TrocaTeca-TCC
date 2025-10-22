@@ -64,7 +64,7 @@ class AcordoController extends Controller
 
         $mensagem = "Proposta final: " . $acordo->anuncio . "
 Categoria: " . $acordo->categoria_acordo . " 
-Data do encontro: " . \Carbon\Carbon::parse($acordo->data_encontro)->format('d/m/Y'). "
+Data do encontro: " . \Carbon\Carbon::parse($acordo->data_encontro)->format('d/m/Y') . "
 Local do encontro: " . $acordo->local_encontro;
 
         $mensagens->id_usuario = $req->user()->id;
@@ -80,11 +80,11 @@ Local do encontro: " . $acordo->local_encontro;
 
     public function show(Request $req)
     {
-        $acordos = Acordo::whereHas('proposta', function ($query) use ($req) {
+        $acordos = Acordo::where('status_acordo', '!=', 0)->whereHas('proposta', function ($query) use ($req) {
             $query->where('id_usuario_int', $req->user()->id);
         })->orWhereHas('proposta.artigo', function ($query) use ($req) {
             $query->where('id_usuario_ofertante', $req->user()->id);
-        })->where('status_acordo', '!=', 0)->with('proposta.artigo.user')->paginate(4);
+        })->with('proposta.artigo.user')->paginate(4);
 
         return view('meusacordos', compact('acordos'));
     }
@@ -94,6 +94,7 @@ Local do encontro: " . $acordo->local_encontro;
         $acordo = new Acordo();
 
         $acordo = $acordo::where('id', $id)->with('proposta.artigo.user')->get();
+
 
         foreach ($acordo as $acordo) {
             if ($acordo->status_acordo == 1) {
@@ -144,11 +145,17 @@ Local do encontro: " . $acordo->local_encontro;
         }
     }
 
-    public function updateStatusAccept($id)
+    public function updateStatusAccept(Request $req, $id)
     {
         $acordo = Acordo::find($id);
 
         $acordo->status_acordo = 1;
+
+        $qrcode = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=";
+        $qrcode .= "http://127.0.0.1:8000/validarqrcode/" . $acordo->id . "/" . $req->user()->id;
+
+        $acordo->qr_code = $qrcode;
+
         $acordo->save();
 
         return redirect()->back();
