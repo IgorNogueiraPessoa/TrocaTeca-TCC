@@ -89,19 +89,25 @@ Local do encontro: " . $acordo->local_encontro;
         return view('meusacordos', compact('acordos'));
     }
 
-    public function updateStatusAgree(Request $req, $id)
+    public function updateStatusAgree(Request $req, $id, $user_id)
     {
         $acordo = new Acordo();
 
         $acordo = $acordo::where('id', $id)->with('proposta.artigo.user')->get();
 
+        if ($req->user()->id == $user_id) {
+            dd($req->user()->id .'/'. $user_id);
+            $status = 'invalid_qrcode';
+            return redirect()->route('meusacordos');
+        }
+
 
         foreach ($acordo as $acordo) {
             if ($acordo->status_acordo == 1) {
 
-                if ($acordo->proposta->id_usuario_int == $req->user()->id) {
+                if ($acordo->proposta->artigo->id_usuario_ofertante == $req->user()->id) {
                     $acordo->status_acordo = 2; //usuario interessado confirmou
-                } elseif ($acordo->proposta->artigo->id_usuario_ofertante == $req->user()->id) {
+                } elseif ($acordo->proposta->id_usuario_int == $req->user()->id) {
                     $acordo->status_acordo = 3; //usuário ofertante confirmou
                 }
                 $status = 'aguarde';
@@ -120,7 +126,7 @@ Local do encontro: " . $acordo->local_encontro;
 
         $acordo->save();
 
-        return redirect()->back()->with('status', $status);
+        return redirect()->route('meusacordos');
     }
 
     public function generatePdf(Acordo $acordo)

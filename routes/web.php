@@ -31,7 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::get('validarTroca/{id}', [AcordoController::class, 'updateStatusAgree']);
     Route::get('/meusacordos', [AcordoController::class, 'show'])->name('meusacordos');
 
-    Route::get('/validarqrcode/{id}', [AcordoController::class, 'updateStatusAgree'])->name('validarqrcode');
+    Route::get('/validarqrcode/{id}/{user_id}', [AcordoController::class, 'updateStatusAgree'])->name('validarqrcode');
 
 
     Route::get('/chat/{id}', [PropostaController::class, 'showPropose'])->name('view_messages');
