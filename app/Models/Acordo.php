@@ -19,7 +19,6 @@ class Acordo extends Model
         'categoria_acordo',
         'imagem_acordo',
         'status_acordo',
-        'qr_code'
     ];
 
     public function proposta()

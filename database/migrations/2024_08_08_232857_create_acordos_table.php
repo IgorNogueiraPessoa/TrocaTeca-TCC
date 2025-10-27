@@ -20,7 +20,6 @@ return new class extends Migration
             $table->String('local_encontro');
             $table->String('imagem_acordo');
             $table->tinyInteger('status_acordo');
-            $table->String('qr_code')->nullable();
             $table->timestamps();
         });
     }
