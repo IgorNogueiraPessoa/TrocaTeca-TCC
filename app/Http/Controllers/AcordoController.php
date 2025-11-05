@@ -157,11 +157,6 @@ Local do encontro: " . $acordo->local_encontro;
 
         $acordo->status_acordo = 1;
 
-        $qrcode = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=";
-        $qrcode .= "http://127.0.0.1:8000/validarqrcode/" . $acordo->id . "/" . $req->user()->id;
-
-        $acordo->qr_code = $qrcode;
-
         $acordo->save();
 
         return redirect()->back();
