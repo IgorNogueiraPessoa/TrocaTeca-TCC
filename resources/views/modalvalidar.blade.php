@@ -34,17 +34,12 @@
         </p>
         <hr class="h-px bg-black border-2 border-black">
         <h1 class="text-lg sm:text-xl md:text-2xl lg:text-xl font-bold text-left text-redtt font-fredokatt mb-1">Atenção: Valide a troca somente mediante ao encontro e recebimento do artigo.</h1>
-        <!-- Checkbox de confirmação de consentimento -->
-        <div class="mt-4 flex items-center gap-2">
-          <input type="checkbox" id="confirm{{ $arc->id }}" name="confirm" class="mr-2 peer" required>
-          <label for="confirm{{ $arc->id }}" class="text-xs sm:text-sm md:text-base lg:text-lg text-black">Encontro ocorreu conforme combinado</label>
-        </div>
         <!-- Botões de confirmação -->
         <div class="mt-4 flex flex-row gap-4 justify-around space-x-4">
           <button type="button" id="cancelInative{{ $arc->id }}" class="inline-flex items-center justify-center w-full sm:w-auto px-4 py-2 bg-pinktt hover:bg-pinktt-dark shadow-tt text-white text-xs sm:text-sm md:text-base lg:text-lg font-medium rounded-2xl transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-110 duration-300">
             Cancelar
           </button>
-          <button type="button" id="openQrcodeButton" class="opacity-50 cursor-not-allowed inline-flex items-center justify-center w-full sm:w-auto px-4 py-2 bg-greentt shadow-tt text-white text-xs sm:text-sm md:text-base lg:text-lg font-medium rounded-2xl transition ease-in-out delay-100 duration-300" onclick="startloading()">
+          <button type="button" id="openQrcodeButton" class="cursor-pointer inline-flex items-center justify-center w-full sm:w-auto px-4 py-2 bg-greentt shadow-tt text-white text-xs sm:text-sm md:text-base lg:text-lg font-medium rounded-2xl transition ease-in-out delay-100 duration-300 hover:bg-greentt-dark hover:-translate-y-1 hover:scale-110  onclick="startloading()">
             Visualizar QrCode
           </button>
         </div>
@@ -72,22 +67,6 @@
                 document.body.classList.remove('overflow-hidden');
             });
         });
-
-  //checar se a checkbox está precionada ou não (modal de validar)
-  const checkbox{{ $arc->id }} = document.getElementById('confirm{{ $arc->id }}');
-  const inativarButton{{ $arc->id }} = document.getElementById('inativarButton{{ $arc->id }}');
-
-  checkbox{{ $arc->id }}.addEventListener('change', function() {
-    if (checkbox{{ $arc->id }}.checked) {
-      inativarButton{{ $arc->id }}.disabled = false;
-      inativarButton{{ $arc->id }}.classList.remove('opacity-50', 'cursor-not-allowed');
-      inativarButton{{ $arc->id }}.classList.add('hover:bg-greentt-dark', 'transition', 'ease-in-out', 'delay-100', 'hover:-translate-y-1', 'hover:scale-110', 'duration-300');
-    } else {
-      inativarButton{{ $arc->id }}.disabled = true;
-      inativarButton{{ $arc->id }}.classList.remove('hover:bg-greentt-dark', 'transition', 'ease-in-out', 'delay-100', 'hover:-translate-y-1', 'hover:scale-110', 'duration-300');
-      inativarButton{{ $arc->id }}.classList.add('opacity-50', 'cursor-not-allowed');
-    }
-  });
 
   //função de loading ao clicar em visualizar qrcode
 

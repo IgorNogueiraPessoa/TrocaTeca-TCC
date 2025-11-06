@@ -76,6 +76,7 @@ Route::get('/filter/{type}/{value}', [ArtigoController::class, 'filter'])->name(
 Route::get('/perfilanunciante/{id}', [ProfileController::class, 'viewProfileanun'])->name('viewProfileanun');
 
 Route::post('/propose/create', [PropostaController::class, 'create'])->middleware(['auth', 'verified'])->name('propose.add');
+Route::get('/propose/sendarticle/{id_artigo}/{id}', [PropostaController::class, 'clone'])->middleware(['auth', 'verified'])->name('propose.addArticle');
 Route::get('/viewannounce/{id_artigo}/{denun_id?}', [ArtigoController::class, 'viewAnnounce'])->name('artigo.view');
 
 Route::get('/about', function () {

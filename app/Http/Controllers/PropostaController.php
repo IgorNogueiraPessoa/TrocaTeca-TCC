@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Artigo;
 use App\Models\Proposta;
 use App\Models\Mensagem;
 use Illuminate\Http\Request;
@@ -82,6 +83,48 @@ Tempo de uso: ".$prst->tempo_uso_proposta;
 
         return redirect('/mep');
 
+    }
+
+    public function clone(Request $req, $id_artigo, $id)
+    {
+        $prst = new Proposta();
+
+        $artg = new Artigo();
+        $artg = $artg::find($id_artigo);
+
+        $prst->id_artigo = $id;
+        $prst->nome_proposta = $artg->nome_artigo;
+        $prst->categoria_proposta = $artg->categoria_artigo;
+        $prst->condicao_proposta = $artg->condicao_artigo;
+        $prst->tempo_uso_proposta = $artg->tempo_uso_artigo;
+
+        foreach($artg->imagens as $imagem){
+            if($imagem->imagem_principal){
+                $prst->endereco_img_prop = $imagem->endereco_imagem;
+                break;
+            }
+        }        
+
+        $prst->id_usuario_int = $req->user()->id;
+        $prst->status_proposta = 0; //proposta pendente
+
+        $prst->save();
+
+        $mensagens = new Mensagem();
+
+        $mensagem = "Proposta: ".$prst->nome_proposta."
+Categoria: ".$prst->categoria_proposta." 
+Tempo de uso: ".$prst->tempo_uso_proposta;
+
+        $mensagens->id_usuario = $prst->id_usuario_int;
+        $mensagens->id_proposta = $prst->id;
+        $mensagens->conteudo_mensagem = $mensagem;
+        $mensagens->endereco_anexo = $prst->endereco_img_prop;
+        $mensagens->visto = 0;
+
+        $mensagens->save();
+
+        return redirect('/mep');
     }
 
     public function show(Request $req){

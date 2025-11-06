@@ -34,6 +34,7 @@
                         <div class="grid grid-cols-1 gap-4 justify-items-center w-full">
 
                             @php
+                            $enabled = true;
                             if(($arc->status_acordo) == 4 || ($arc->proposta->id_usuario_int == Auth()->user()->id && $arc->status_acordo == 3) ||
                              ($arc->proposta->artigo->id_usuario_ofertante == Auth()->user()->id && $arc->status_acordo == 2))
                                 $enabled = false;

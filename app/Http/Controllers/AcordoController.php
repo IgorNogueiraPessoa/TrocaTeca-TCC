@@ -106,9 +106,9 @@ Local do encontro: " . $acordo->local_encontro;
             if ($acordo->status_acordo == 1) {
 
                 if ($acordo->proposta->artigo->id_usuario_ofertante == $req->user()->id) {
-                    $acordo->status_acordo = 2; //usuario interessado confirmou
+                    $acordo->status_acordo = 3; //usuario interessado confirmou
                 } elseif ($acordo->proposta->id_usuario_int == $req->user()->id) {
-                    $acordo->status_acordo = 3; //usuário ofertante confirmou
+                    $acordo->status_acordo = 2; //usuário ofertante confirmou
                 }
                 $status = 'aguarde';
             } elseif (($acordo->status_acordo == 3 && $acordo->proposta->id_usuario_int == $req->user()->id) ||

@@ -120,6 +120,11 @@
     @include('newproposem')
 
     <script>
+
+        function closeNewProposal(){
+            modalNewProposal.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+        }
         //inclusão do modal de denunciar
         document.addEventListener('DOMContentLoaded', function() {
             const isAuthenticated = document.body.getAttribute('data-authenticated') === '1';

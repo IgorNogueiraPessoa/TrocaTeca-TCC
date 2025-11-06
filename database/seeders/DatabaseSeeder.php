@@ -19,5 +19,8 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => '2024-08-23 02:41:39',
             'password' => '$2y$12$PjhCrVD5iaJa0tvjKVXjOeCsB7yqjy.Qa4oO.AsGYfr0Q6goLHjly',
         ]);
+        \App\Models\User::factory()->count(2)->create();
     }
+    
+    
 }

@@ -300,10 +300,19 @@ class ArtigoController extends Controller
     public function viewAnnounce($id_artigo, Request $req, $denun_id = NULL)
     {
         $artigo = Artigo::with(['imagens', 'user'])->findOrFail($id_artigo);
+
+        $meusartigos = Artigo::where('id_usuario_ofertante', $req->user()->id)
+            ->whereDoesntHave('proposta', function ($query) {
+                $query->whereHas('acordo', function ($query) {
+                    $query->where('status_acordo', 4); // Excluir artigos com acordos bem-sucedidos
+                });
+            })->with('imagens')->paginate(4);
+
+        
         if (isset($denun_id))
         return view('adm.viewannounce', compact('artigo','denun_id'));
 
-        return view('viewannounce')->with('artigo', $artigo);
+        return view('viewannounce', compact('artigo', 'meusartigos'));
     }
 
     public function filter($type, $value, Request $req)
