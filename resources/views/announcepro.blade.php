@@ -12,12 +12,12 @@
 </head>
 
 <body class="bg-backgtt">
-    <div class="h-full min-h-screen relative">
+    <div id="notloading" class="h-full min-h-screen relative">
         @include('navbar')
         <div class="flex flex-col h-full items-center">
             <h1 class=" text-3xl lg:text-4xl font-bold text-center text-white font-fredokatt drop-shadow-tt mt-6">Anuncie um Novo Artigo</h1> <!--Título-->
             <!--input de imagem-->
-            <form method="POST" action="{{ route('artigo.add') }}" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('artigo.add') }}" enctype="multipart/form-data" onsubmit="startLoading()">
             @csrf
                 <div class="flex flex-col lg:flex-row lg:items-center lg:place-content-center mb-5">
                     <div class="lg:mr-8">
@@ -194,6 +194,7 @@
 
         </script>
         @include('footer')
+        @include('loading')
     </div>
 </body>
 

@@ -11,7 +11,7 @@
 </head>
 
 <body class="bg-backgtt">
-    <div class="h-full min-h-screen relative">
+    <div id="notloading" class="h-full min-h-screen relative">
         @include('navbar')
         <div class="z-10">
             <div class="space-y-8 overflow-hidden sm:px-6 lg:px-8 bg-backgtt w-full">
@@ -45,6 +45,8 @@
                             <div class="w-full max-w-48 mt-6 mb-9 lg:max-w-none cursor-pointer" 
                             @if($enabled) 
                             id="abrirValidar{{ $arc->id }}"
+                            @else
+                            onclick="abrirAcaoInvalida()"
                             @endif>
                                 <div class="flex flex-col lg:flex-row gap-3 bg-white rounded-3xl overflow-hidden items-center justify-start border-2 border-graytt-light shadow-tt transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-105 duration-300">
                                     <div class="flex justify-center w-full lg:w-auto">
@@ -111,15 +113,19 @@
     @endforeach
     @endif
 
-    @include('notification', ['title' => "Ação realizada com êxito", 'body' => "Seu comprovante chegará por e-mail quando ambas as partes validarem o acordo."])
+    @include('notification', ['title' => "Ação inválida", 'body' => "Erro ao realizar a ação. Troca já Validada."])
 
-
-    @if(session('status') )
-    <script>
-        modal.classList.remove('hidden');
-        document.body.classList.add('overflow-hidden');
-    </script>
+    @if(null !== (session('status')) && session('status') == 'aguarde')
+        @include('notification', ['title' => "Sucesso", 'body' => session('status'), 'visible' => true] )
     @endif
+
+    <script>
+        function abrirAcaoInvalida() {
+            const modal = document.querySelectorAll('.modalnotification')[0];
+            modal.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+        };
+    </script>
 
     @include('loading')
 

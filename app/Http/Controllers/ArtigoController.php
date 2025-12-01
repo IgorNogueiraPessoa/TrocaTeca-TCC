@@ -60,14 +60,14 @@ class ArtigoController extends Controller
 
         $artg = new Artigo;
         $artg->nome_artigo = $req->nome_art;
-        if($req->val > 0){
+        if ($req->val > 0) {
             $artg->valor_sugerido_artigo = $req->val;
         }
         $artg->preferencia_troca_artigo = $req->pref;
         $artg->categoria_artigo = $req->catepropo;
         $artg->condicao_artigo = $req->condpropo;
         $artg->id_usuario_ofertante = $req->user()->id;
-        $artg->tempo_uso_artigo = $req->uso_art." ".$req->uso_art2;
+        $artg->tempo_uso_artigo = $req->uso_art . " " . $req->uso_art2;
         $artg->status_artigo = 0;
 
         $artg->save();
@@ -112,11 +112,11 @@ class ArtigoController extends Controller
                 });
             })->with('imagens')->get();
         $artigo_sucedido = Artigo::where('id_usuario_ofertante', $req->user()->id)
-        ->whereHas('proposta', function ($query) {
-            $query->whereHas('acordo', function ($query) {
-                $query->where('status_acordo', 4); // Excluir artigos com acordos bem-sucedidos
-            });
-        })->with('imagens')->get();
+            ->whereHas('proposta', function ($query) {
+                $query->whereHas('acordo', function ($query) {
+                    $query->where('status_acordo', 4); // Excluir artigos com acordos bem-sucedidos
+                });
+            })->with('imagens')->get();
         return view('meusartigos', compact('artigo', 'artigo_sucedido'));
     }
 
@@ -128,7 +128,7 @@ class ArtigoController extends Controller
             ->where('acordos.status_acordo', 4)
             ->select('propostas.id_usuario_int', DB::raw('COUNT(*) as trocas_bem_sucedidas'))
             ->groupBy('propostas.id_usuario_int');
-    
+
         // Consulta principal
         $artg = Artigo::where('nome_artigo', 'LIKE', $req->search . '%')
             ->whereHas('user', function ($query) {
@@ -147,39 +147,42 @@ class ArtigoController extends Controller
             ->orderByDesc('acordos_count.trocas_bem_sucedidas') // Ordenar pela quantidade de trocas bem-sucedidas
             ->orderByDesc('artigos.created_at') // Ordenar por data de criação
             ->paginate(4);
-    
-    return view('announcements', [
-        'artigo' => $artg,
-        'searchTerm' => $req->search, // Passa o termo de pesquisa para a view
-    ]);
+
+        return view('announcements', [
+            'artigo' => $artg,
+            'searchTerm' => $req->search, // Passa o termo de pesquisa para a view
+        ]);
     }
 
     public function list(Request $req)
     {
-    // Subconsulta para contar acordos bem-sucedidos por usuário
-    $subQuery = DB::table('acordos')
-        ->join('propostas', 'acordos.id_proposta', '=', 'propostas.id')
-        ->where('acordos.status_acordo', 4)
-        ->select('propostas.id_usuario_int', DB::raw('COUNT(*) as trocas_bem_sucedidas'))
-        ->groupBy('propostas.id_usuario_int');
+        // Subconsulta para contar acordos bem-sucedidos por usuário
+        $subQuery = DB::table('acordos')
+            ->join('propostas', 'acordos.id_proposta', '=', 'propostas.id')
+            ->where('acordos.status_acordo', 4)
+            ->select('propostas.id_usuario_int', DB::raw('COUNT(*) as trocas_bem_sucedidas'))
+            ->groupBy('propostas.id_usuario_int');
 
-    // Consulta principal para listar artigos
-    $artigo = Artigo::select('artigos.*')
-        ->join('users', 'users.id', '=', 'artigos.id_usuario_ofertante')
-        ->leftJoinSub($subQuery, 'acordos_count', function ($join) {
-            $join->on('users.id', '=', 'acordos_count.id_usuario_int');
-        })
-        ->whereNull('users.estado_conta') // Exclui artigos de usuários inativados
-        ->whereDoesntHave('proposta', function ($query) {
-            $query->whereHas('acordo', function ($query) {
-                $query->where('status_acordo', 4); // Excluir artigos com acordos bem-sucedidos
-            });
-        })
-        ->where('status_artigo', '0')
-        ->with('imagens', 'user') // Carrega relações de imagens e usuário
-        ->orderByDesc('acordos_count.trocas_bem_sucedidas') // Prioriza usuários com mais trocas bem-sucedidas
-        ->orderByDesc('artigos.created_at') // E depois os mais recentes
-        ->paginate(4);
+        // Consulta principal para listar artigos
+        $artigo = Artigo::select('artigos.*')
+            ->join('users', 'users.id', '=', 'artigos.id_usuario_ofertante')
+            ->leftJoinSub($subQuery, 'acordos_count', function ($join) {
+                $join->on('users.id', '=', 'acordos_count.id_usuario_int');
+            })
+            ->whereNull('users.estado_conta') // Exclui artigos de usuários inativados
+            ->whereDoesntHave('proposta', function ($query) {
+                $query->whereHas('acordo', function ($query) {
+                    $query->where('status_acordo', 4); // Excluir artigos com acordos bem-sucedidos
+                });
+            })
+            ->where('status_artigo', '0')
+            ->when($req->user(), function ($query) use ($req) {
+                return $query->where('users.id', '!=', $req->user()->id); // Exclui artigos do usuário autenticado apenas se estiver logado
+            })
+            ->with('imagens', 'user') // Carrega relações de imagens e usuário
+            ->orderByDesc('acordos_count.trocas_bem_sucedidas') // Prioriza usuários com mais trocas bem-sucedidas
+            ->orderByDesc('artigos.created_at') // E depois os mais recentes
+            ->paginate(4);
 
         if (null !== $req->user() && $req->user()->email == 'trocatecaltda@gmail.com') {
             return view('adm.announcements', compact(['artigo']));
@@ -192,8 +195,8 @@ class ArtigoController extends Controller
     {
         $artigo = Artigo::with('imagens')->where('id', $req->id)->first();
         $reported = !Artigo::where('id', $req->id)
-                ->whereHas('denuncia_artigo')
-                ->exists();
+            ->whereHas('denuncia_artigo')
+            ->exists();
         return view('editannounce', compact('artigo', 'reported'));
     }
 
@@ -241,7 +244,7 @@ class ArtigoController extends Controller
 
         if ($validator->fails()) return redirect()->back()->withErrors($validator)->withInput();
 
-        if(!isEmpty(Artigo::with('denuncia_artigo')->get())){
+        if (!isEmpty(Artigo::with('denuncia_artigo')->get())) {
             return redirect()->back();
         }
 
@@ -253,7 +256,7 @@ class ArtigoController extends Controller
                 "preferencia_troca_artigo" => $req->preferencia_troca_artigo,
                 "categoria_artigo" => $req->categoria_artigo,
                 "condicao_artigo" => $req->condicao_artigo,
-                "tempo_uso_artigo" => $req->tempo_uso_artigo." ".$req->tempo_uso_artigo2
+                "tempo_uso_artigo" => $req->tempo_uso_artigo . " " . $req->tempo_uso_artigo2
 
             ]
         );
@@ -306,58 +309,98 @@ class ArtigoController extends Controller
                 $query->whereHas('acordo', function ($query) {
                     $query->where('status_acordo', 4); // Excluir artigos com acordos bem-sucedidos
                 });
-            })->with('imagens')->paginate(4);
+            })->with('imagens')->get();
 
-        
+
         if (isset($denun_id))
-        return view('adm.viewannounce', compact('artigo','denun_id'));
+            return view('adm.viewannounce', compact('artigo', 'denun_id'));
 
         return view('viewannounce', compact('artigo', 'meusartigos'));
     }
 
-    public function filter($type, $value, Request $req)
+    public function filter(Request $req)
     {
-    // Inicializa a consulta base para evitar repetição de código
-    $artigoQuery = Artigo::whereDoesntHave('proposta', function ($query) {
-            $query->whereHas('acordo', function ($query) {
-                $query->where('status_acordo', 4); // Excluir artigos com acordos bem-sucedidos
-            });
-        })
-        ->where('status_artigo', '0')
-        ->wherehas('user', function ($query){
-            $query->whereNull('estado_conta');
-        }) // Exclui artigos de usuários inativados
-        ->with('imagens'); // Carregar a relação 'imagens'
+        // Espera receber arrays vindos das checkboxes com nomes:
+        // - categoria[]  -> categorias selecionadas
+        // - condicao[]   -> condições selecionadas
+        // - local[]      -> localidades selecionadas (ex: "minha cidade", "meu estado")
+        $categorias = $req->input('categoria', []);
+        $condicoes = $req->input('condicao', []);
+        $localidades = $req->input('local', []);
 
-    // Filtra de acordo com o tipo
-    if ($type == 'categoria') {
-        $artigoQuery->where('categoria_artigo', $value);
+        // Normaliza: aceita tanto string único quanto array
+        if (!is_array($categorias)) $categorias = $categorias ? [$categorias] : [];
+        if (!is_array($condicoes)) $condicoes = $condicoes ? [$condicoes] : [];
+        if (!is_array($localidades)) $localidades = $localidades ? [$localidades] : [];
 
-    } elseif ($type == 'condicao') {
-        $artigoQuery->where('condicao_artigo', 'LIKE', $value);
+        // Subconsulta para contar trocas bem-sucedidas por usuário (mantém ordenação consistente)
+        $subQuery = DB::table('acordos')
+            ->join('propostas', 'acordos.id_proposta', '=', 'propostas.id')
+            ->where('acordos.status_acordo', 4)
+            ->select('propostas.id_usuario_int', DB::raw('COUNT(*) as trocas_bem_sucedidas'))
+            ->groupBy('propostas.id_usuario_int');
 
-    } elseif ($type == 'local') {
-        if(!isset($req->user()->id)){
-            return redirect()->back();
+        // Consulta base
+        $artigoQuery = Artigo::select('artigos.*')
+            ->join('users', 'users.id', '=', 'artigos.id_usuario_ofertante')
+            ->leftJoinSub($subQuery, 'acordos_count', function ($join) {
+                $join->on('users.id', '=', 'acordos_count.id_usuario_int');
+            })
+            ->whereNull('users.estado_conta')
+            ->whereDoesntHave('proposta', function ($query) {
+                $query->whereHas('acordo', function ($query) {
+                    $query->where('status_acordo', 4); // Excluir artigos com acordos bem-sucedidos
+                });
+            })
+            ->where('status_artigo', '0')
+            ->when($req->user(), function ($q) use ($req) {
+                return $q->where('users.id', '!=', $req->user()->id);
+            })
+            ->with('imagens', 'user');
+
+        // Aplica filtros por categorias (OR entre categorias -> whereIn)
+        if (!empty($categorias)) {
+            $artigoQuery->whereIn('categoria_artigo', $categorias);
         }
 
-        if($value == 'minha cidade'){
-            $artigoQuery->whereHas('user', function ($query) use ($req) {
-                $query->where('cidade', $req->user()->cidade)
-                ->where('estado', $req->user()->estado);
-            })->where('id_usuario_ofertante', '!=' , $req->user()->id);
-        }else{
-            $artigoQuery->whereHas('user', function ($query) use ($req) {
-                $query->where('estado', $req->user()->estado);
-            })->where('id_usuario_ofertante', '!=' , $req->user()->id);
+        // Aplica filtros por condição (OR entre condições -> whereIn)
+        if (!empty($condicoes)) {
+            $artigoQuery->whereIn('condicao_artigo', $condicoes);
         }
 
-    }
+        // Aplica filtros por localidade (combina condições de cidade/estado)
+        if (!empty($localidades) && $req->user()) {
+            $artigoQuery->where(function ($q) use ($localidades, $req) {
+                foreach ($localidades as $loc) {
+                    $loc = mb_strtolower(trim($loc));
+                    if ($loc === 'minha cidade') {
+                        $q->orWhereHas('user', function ($uq) use ($req) {
+                            $uq->where('cidade', $req->user()->cidade)
+                                ->where('estado', $req->user()->estado);
+                        });
+                    } elseif ($loc === 'meu estado' || $loc === 'meu estado') {
+                        $q->orWhereHas('user', function ($uq) use ($req) {
+                            $uq->where('estado', $req->user()->estado);
+                        });
+                    }
+                }
+            })->where('id_usuario_ofertante', '!=', $req->user()->id);
+        }
 
-    // Executa a consulta e obtém os resultados
-    $artigo = $artigoQuery->paginate(4);
+        // Ordena e pagina
+        $artigo = $artigoQuery
+            ->orderByDesc('acordos_count.trocas_bem_sucedidas')
+            ->orderByDesc('artigos.created_at')
+            ->paginate(4)
+            ->appends($req->only(['categoria', 'condicao', 'local']));
 
-    // Retorna a view com os artigos filtrados
-    return view('announcements', compact(['artigo', 'type', 'value'])); 
+        // Passa também os filtros selecionados para a view (útil para manter estado)
+        $selected = [
+            'categoria' => $categorias,
+            'condicao' => $condicoes,
+            'local' => $localidades,
+        ];
+
+        return view('announcements', compact('artigo', 'selected'));
     }
 }

@@ -9,34 +9,32 @@
 
                     <h1 class="text-2xl sm:text-4xl font-bold text-center text-white font-fredokatt drop-shadow-tt mb-8">Enviar um artigo</h1>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-items-center">
-                        <!--Card do anúncio-->
-                        @if($meusartigos)
-                        @foreach($meusartigos as $artg)
-                        <!-- Verificar o estado do usuário -->
-                        @if($artg->user->status !== 'inativado')
-                        <div class="group my-1 flex w-full max-w-[260px] flex-col overflow-hidden rounded-xl border border-graytt-light shadow-tt bg-white transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-110 duration-300">
-                            <a href="/propose/sendarticle/{{$artg->id}}/{{$artigo->id}}">
-                                <div class="relative mx-3 mt-3 flex h-48 overflow-hidden rounded-xl border-2 border-black">
-                                    @foreach($artg->imagens as $imagem)
-                                    @if($imagem->imagem_principal)
-                                    <img class="peer absolute top-0 right-0 h-full w-full object-cover" loading="lazy" src="{{ asset($imagem->endereco_imagem) }}">
-                                    @endif
-                                    @endforeach
-                                </div>
-                                <div class="mt-4 px-5 pb-5">
-                                    <p class="truncate lg:text-left lg:mt-2 text-black">{{$artg->nome_artigo}}</p>
-                                    <p class="truncate lg:text-left lg:mt-2 text-stone-400">{{$artg->categoria_artigo}}</p>
-                                </div>
-                            </a>
+                    <div class="pt-4 px-3 pb-8 overflow-y-auto max-h-80 w-full">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-items-center">
+                            <!--Card do anúncio-->
+                            @if($meusartigos)
+                            @foreach($meusartigos as $artg)
+                            <!-- Verificar o estado do usuário -->
+                            @if($artg->user->status !== 'inativado')
+                            <div class="group my-1 flex w-full max-w-[260px] flex-col overflow-hidden rounded-xl border border-graytt-light shadow-tt bg-white transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-110 duration-300">
+                                <a href="/propose/sendarticle/{{$artg->id}}/{{$artigo->id}}">
+                                    <div class="relative mx-3 mt-3 flex h-48 overflow-hidden rounded-xl border-2 border-black">
+                                        @foreach($artg->imagens as $imagem)
+                                        @if($imagem->imagem_principal)
+                                        <img class="peer absolute top-0 right-0 h-full w-full object-cover" loading="lazy" src="{{ asset($imagem->endereco_imagem) }}">
+                                        @endif
+                                        @endforeach
+                                    </div>
+                                    <div class="mt-4 px-5 pb-5">
+                                        <p class="truncate lg:text-left lg:mt-2 text-black">{{$artg->nome_artigo}}</p>
+                                        <p class="truncate lg:text-left lg:mt-2 text-stone-400">{{$artg->categoria_artigo}}</p>
+                                    </div>
+                                </a>
+                            </div>
+                            @endif
+                            @endforeach
+                            @endif
                         </div>
-                        @endif
-                        @endforeach
-                        @endif
-                    </div>
-
-                    <div class="flex gap-5 justify-center mt-8">
-                        {{ $meusartigos->links() }}
                     </div>
 
                     <div class="flex">
@@ -130,6 +128,7 @@
 
                         <!-- Botões de confirmação -->
                         <div class="flex">
+                            @if($meusartigos->count() > 0)
                             <div class="flex gap-3 justify-start w-full">
                                 <div class="justify-between flex content-center w-2xs mt-8">
                                     <button type="button" class="inline-flex bg-white items-center px-4 py-2 justify-center w-full sm:w-auto shadow-tt hover:bg-graytt-light text-white text-white text-sm font-medium rounded-2xl mr-5 transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-110 duration-300 cursor-pointerx" onclick="openSendArticle()">
@@ -137,6 +136,7 @@
                                     </button>
                                 </div>
                             </div>
+                            @endif
 
                             <div class="flex gap-3 justify-end w-full">
                                 <div class="justify-between flex content-center w-2xs mt-8">

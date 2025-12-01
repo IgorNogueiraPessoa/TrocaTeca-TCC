@@ -13,12 +13,12 @@
 <body>
     <x-auth-session-status class="mb-4" :status="session('status')" />
     <!--Modal de logar-se-->
-    <div class="w-screen h-screen z-[45] absolute left-0 top-0 bg-backgtt bg-repeat bg-[length:870px_654px] bg-[url('/public/image/bg-icons.png')] bg-auto">
+    <div id="notloading" class="w-screen h-screen z-[45] absolute left-0 top-0 bg-backgtt bg-repeat bg-[length:870px_654px] bg-[url('/public/image/bg-icons.png')] bg-auto">
         <div class="fixed z-50 inset-0 flex items-center justify-center p-4 sm:p-8">
             <div class="w-full max-w-lg rounded-3xl bg-bluett py-6 sm:py-8 px-16 shadow-2xl items-center drop-shadow-tt border-2 border-graytt-light">
                 <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-center text-white font-fredokatt drop-shadow-tt mb-5" style="font-family: 'Fredoka';">Login</h1> <!--Título de aviso-->
 
-                <form method="POST" action="{{ route('login') }}">
+                <form method="POST" action="{{ route('login') }}" onsubmit="startLoading();">
                     @csrf
 
                     <div>
@@ -59,6 +59,8 @@
             </div>
         </div>
     </div>
+
+    @include('loading')
 </body>
 
 </html>

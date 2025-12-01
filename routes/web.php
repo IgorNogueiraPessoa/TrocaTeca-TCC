@@ -71,7 +71,8 @@ Route::get('/ann', function () {
 });
 
 Route::get('/search', [ArtigoController::class, 'search'])->name('search');
-Route::get('/filter/{type}/{value}', [ArtigoController::class, 'filter'])->name('filter');
+Route::post('/filter', [ArtigoController::class, 'filter'])->name('filter');
+Route::get('/filter', [ArtigoController::class, 'filter'])->name('filter');
 
 Route::get('/perfilanunciante/{id}', [ProfileController::class, 'viewProfileanun'])->name('viewProfileanun');
 
