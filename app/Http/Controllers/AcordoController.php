@@ -66,14 +66,7 @@ class AcordoController extends Controller
 
         $mensagens = new Mensagem();
 
-        // Build message content; include clickable map link if coordinates were provided
-        if (!empty($acordo->pontoe_lat) && !empty($acordo->pontoe_lon)) {
-            $local_html = '<a href="#" class="message-map" data-lat="' . e($acordo->pontoe_lat) . '" data-lon="' . e($acordo->pontoe_lon) . '">Local do encontro: ' . e($acordo->local_encontro) . '</a>';
-        } else {
-            $local_html = 'Local do encontro: ' . e($acordo->local_encontro);
-        }
-
-        $mensagem = 'Proposta final: ' . e($acordo->anuncio) . "\nCategoria: " . e($acordo->categoria_acordo) . " \nData do encontro: " . \Carbon\Carbon::parse($acordo->data_encontro)->format('d/m/Y') . "\n" . $local_html;
+        $mensagem = 'Proposta final: ' . e($acordo->anuncio) . "\nCategoria: " . $acordo->categoria_acordo . "\nLocal do encontro: " . $acordo->local_encontro . " \nData do encontro: " . \Carbon\Carbon::parse($acordo->data_encontro)->format('d/m/Y');
 
         $mensagens->id_usuario = $req->user()->id;
         $mensagens->id_proposta = $acordo->id_proposta;

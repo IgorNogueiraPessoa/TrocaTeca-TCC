@@ -212,7 +212,9 @@
     @include ('giveuptrade')
     @include ('reportchatm')
     @include ('finalpropose')
-    @include ('map')
+    @if($prop->acordo && $prop->acordo->pontoe_lat && $prop->acordo->pontoe_lon)
+        @include ('map')
+    @endif
 
     <script lang="Javascript">
 
