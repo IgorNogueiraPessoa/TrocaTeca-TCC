@@ -58,14 +58,22 @@ class AcordoController extends Controller
         $acordo->local_encontro = $req->pontoe_fi;
         $acordo->status_acordo = 0;
 
+        // persist coordinates if provided
+        $acordo->pontoe_lat = $req->pontoe_lat ?? null;
+        $acordo->pontoe_lon = $req->pontoe_lon ?? null;
+
         $acordo->save();
 
         $mensagens = new Mensagem();
 
-        $mensagem = "Proposta final: " . $acordo->anuncio . "
-Categoria: " . $acordo->categoria_acordo . " 
-Data do encontro: " . \Carbon\Carbon::parse($acordo->data_encontro)->format('d/m/Y') . "
-Local do encontro: " . $acordo->local_encontro;
+        // Build message content; include clickable map link if coordinates were provided
+        if (!empty($acordo->pontoe_lat) && !empty($acordo->pontoe_lon)) {
+            $local_html = '<a href="#" class="message-map" data-lat="' . e($acordo->pontoe_lat) . '" data-lon="' . e($acordo->pontoe_lon) . '">Local do encontro: ' . e($acordo->local_encontro) . '</a>';
+        } else {
+            $local_html = 'Local do encontro: ' . e($acordo->local_encontro);
+        }
+
+        $mensagem = 'Proposta final: ' . e($acordo->anuncio) . "\nCategoria: " . e($acordo->categoria_acordo) . " \nData do encontro: " . \Carbon\Carbon::parse($acordo->data_encontro)->format('d/m/Y') . "\n" . $local_html;
 
         $mensagens->id_usuario = $req->user()->id;
         $mensagens->id_proposta = $acordo->id_proposta;
@@ -95,10 +103,12 @@ Local do encontro: " . $acordo->local_encontro;
 
         $acordo = $acordo::where('id', $id)->with('proposta.artigo.user')->get();
 
+        $status = '';
+
         if ($req->user()->id == $user_id) {
-            dd($req->user()->id .'/'. $user_id);
+            dd($req->user()->id . '/' . $user_id);
             $status = 'invalid_qrcode';
-            return redirect()->route('meusacordos');
+            return redirect()->route('meusacordos')->with('status', $status);
         }
 
 
@@ -125,8 +135,7 @@ Local do encontro: " . $acordo->local_encontro;
         }
 
         $acordo->save();
-
-        return redirect()->route('meusacordos');
+        return redirect()->route('meusacordos')->with('status', $status);
     }
 
     public function generatePdf(Acordo $acordo)

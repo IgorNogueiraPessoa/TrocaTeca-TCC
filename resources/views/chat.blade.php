@@ -119,7 +119,7 @@
 
         <div class="h-[78vh] py-2">
             <div id="mensagens" class="flex flex-col h-full px-3 pb-2 overflow-y-scroll">
-                
+                @include('messages')
             </div>
         </div>
 
@@ -181,6 +181,14 @@
                         disabled
                         @endif
                         >
+
+                        @if($prop->acordo && $prop->acordo->pontoe_lat && $prop->acordo->pontoe_lon)
+                        <button type="button" class="ml-6 cursor-pointer" onclick="openChatMap('{{ $prop->acordo->pontoe_lat }}','{{ $prop->acordo->pontoe_lon }}')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="currentColor" class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
+                                <path fill="#ffffff" d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"/>
+                            </svg>
+                        </button>
+                        @endif
                     </div>
 
                     @if ($errors->any())
@@ -204,6 +212,7 @@
     @include ('giveuptrade')
     @include ('reportchatm')
     @include ('finalpropose')
+    @include ('map')
 
     <script lang="Javascript">
 
@@ -273,7 +282,6 @@
         }
 
         //Chat ao vivo
-
         $(document).ready(function(){
             run();
         })
@@ -301,6 +309,55 @@
                 timerI = setTimeout("list()", 3000);
                 timerR = true;
             }
+
+            // Map modal handler for message links
+            (function(){
+                let map, marker;
+                function openChatMap(lat, lon) {
+                    const modal = document.getElementById('chatMapModal');
+                    modal.classList.remove('hidden');
+                    document.body.classList.add('overflow-hidden');
+                    setTimeout(() => {
+                        if (!map) {
+                            map = L.map('chatMapContainer').setView([lat, lon], 16);
+                            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                attribution: '&copy; OpenStreetMap contributors'
+                            }).addTo(map);
+                            marker = L.marker([lat, lon]).addTo(map);
+                        } else {
+                            map.setView([lat, lon], 16);
+                            if (marker) marker.setLatLng([lat, lon]);
+                            else marker = L.marker([lat, lon]).addTo(map);
+                        }
+                        map.invalidateSize();
+                    }, 100);
+                }
+
+                function closeChatMap() {
+                    const modal = document.getElementById('chatMapModal');
+                    modal.classList.add('hidden');
+                    document.body.classList.remove('overflow-hidden');
+                }
+
+                document.addEventListener('click', function(e){
+                    const t = e.target.closest && e.target.closest('.message-map');
+                    if (t) {
+                        e.preventDefault();
+                        const lat = parseFloat(t.dataset.lat);
+                        const lon = parseFloat(t.dataset.lon);
+                        if (!isNaN(lat) && !isNaN(lon)) openChatMap(lat, lon);
+                    }
+                });
+
+                document.getElementById('closeChatMap').addEventListener('click', closeChatMap);
+                document.getElementById('chatMapModal').addEventListener('click', function(e){
+                    if (e.target.id === 'chatMapModal') closeChatMap();
+                });
+
+                // Expose to global scope so inline onclick handlers can call them
+                window.openChatMap = openChatMap;
+                window.closeChatMap = closeChatMap;
+            })();
     </script>
 </body>
 

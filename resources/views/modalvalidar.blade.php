@@ -1,4 +1,3 @@
-
 <div id="modalValid{{ $arc->id }}" class="fixed z-[60] w-screen h-screen left-0 top-0 hidden bg-shadowtt">
   <form action="validarTroca/{{ $arc->id }}" method="GET">
     @csrf

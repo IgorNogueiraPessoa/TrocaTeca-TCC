@@ -1,7 +1,27 @@
 @include('sidebar')
+
+<style>
+    /* toggle icons for custom checkboxes */
+    input[type="checkbox"]+label .checked-icon {
+        display: none;
+    }
+
+    input[type="checkbox"]:checked+label .checked-icon {
+        display: inline-block;
+    }
+
+    input[type="checkbox"]+label .unchecked-icon {
+        display: inline-block;
+    }
+
+    input[type="checkbox"]:checked+label .unchecked-icon {
+        display: none;
+    }
+</style>
+
 <!--sidebar (apenas no celular)-->
 <div id="sandwich" class="fixed z-[60] w-screen h-screen left-0 top-0 translate-x-[-150%] bg-shadowtt">
-    <div class=" drop-shadow-2xl absolute w-96 h-screen bg-white top-0 left-0 z-[70] duration-300 max-w-96 w-full rounded-lg">
+    <div class=" drop-shadow-2xl absolute w-96 overflow-auto h-screen bg-white top-0 left-0 z-[70] duration-300 max-w-96 w-full rounded-lg">
         <div class="bg-bluett border-b border-black w-full h-20 flex place-content-center items-center">
             <p class="h-fit text-white font-fredokatt drop-shadow-tt text-3xl">Menu</p>
             <span onclick="sandwich()" class="absolute cursor-pointer right-5">
@@ -10,7 +30,7 @@
         </div>
         <div class="flex flex-col ml-6 mt-3 max-w-80">
             <button class="focus:outline-none border-b border-graytt-dark">
-                <div class="flex flex-row w-fit items-center mt-5 mb-3"  onclick="toggleFiltros()">
+                <div id="" class="flex flex-row w-fit items-center mt-5 mb-3" onclick="toggleFiltros()">
                     <svg class="w-8 h-8 mr-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                         <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -23,33 +43,193 @@
                         <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                     </svg>
                 </div>
-                <div id="filtros" class="overflow-hidden duration-300 max-h-0">
-                    <div class="flex flex-col items-start px-4 text-lg mt-3 text-left">
-                        <p class="font-semibold">Categoria:</p>
-                        <a class="underline-animation mt-1" href="{{ route('filter', ['type'=>'categoria', 'value'=>'Brinquedo']) }}">Brinquedo</a>
-                        <a class="underline-animation mt-1" href="{{ route('filter', ['type'=>'categoria', 'value'=>'Mobilidade']) }}">Mobilidade</a>
-                        <a class="underline-animation mt-1" href="{{ route('filter', ['type'=>'categoria', 'value'=>'Móvel']) }}">Móvel</a>
-                        <a class="underline-animation mt-1" href="{{ route('filter', ['type'=>'categoria', 'value'=>'Roupa']) }}">Roupa</a>
-                        <a class="underline-animation mt-1" href="{{ route('filter', ['type'=>'categoria', 'value'=>'Outro']) }}">Outro</a>
-                        <hr class="h-px w-full bg-black border-2 border-black mb-4 mt-4">
-                    </div>
-
-                    <div class="flex flex-col items-start px-4 text-lg text-left">
-                        <p class="font-semibold">Condição:</p>
-                        <a class="underline-animation mt-1" href="{{ route('filter', ['type'=>'condicao', 'value'=>'Novo']) }}">Novo</a>
-                        <a class="underline-animation mt-1" href="{{ route('filter', ['type'=>'condicao', 'value'=>'Seminovo']) }}">Seminovo</a>
-                        <a class="underline-animation mt-1" href="{{ route('filter', ['type'=>'condicao', 'value'=>'Usado']) }}">Usado</a>
-                        <hr class="h-px w-full bg-black border-2 border-black mb-4 mt-4">
-                    </div>
-
-
-                    <div class="flex flex-col items-start px-4 text-lg text-left mb-5">
-                        <p class="font-semibold">Localidade:</p>
-                        <a class="underline-animation mt-1" href="{{ route('filter', ['type'=>'local', 'value'=>'minha cidade']) }}">Minha cidade</a>
-                        <a class="underline-animation mt-1" href="{{ route('filter', ['type'=>'local', 'value'=>'meu estado']) }}">Meu estado</a>
-                    </div>
-                </div>
             </button>
+                <form action="/filter" method="POST">
+                    @csrf
+                    <div id="filtros" class="overflow-hidden duration-300 max-h-0">
+                        <div class="flex flex-col items-start px-4 text-lg mt-3 text-left">
+                            <p class="font-semibold">Categoria:</p>
+                            <input class="" type="checkbox" name="categoria[]" value="brinquedo" id="m_brinquedo" hidden />
+                            <label class="flex items-center gap-2 cursor-pointer text-lg mt-1" for="m_brinquedo">
+                                <span class="unchecked-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-square text-bluett" viewBox="0 0 16 16">
+                                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+                                    </svg>
+                                </span>
+                                <span class="checked-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square text-greentt" viewBox="0 0 16 16">
+                                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+                                        <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z" />
+                                    </svg>
+                                </span>
+                                Brinquedo
+                            </label>
+
+                            <input class="" type="checkbox" name="categoria[]" value="mobilidade" id="m_mobilidade" hidden />
+                            <label class="flex items-center gap-2 cursor-pointer text-lg mt-1" for="m_mobilidade">
+                                <span class="unchecked-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-square text-bluett" viewBox="0 0 16 16">
+                                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+                                    </svg>
+                                </span>
+                                <span class="checked-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square text-greentt" viewBox="0 0 16 16">
+                                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+                                        <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z" />
+                                    </svg>
+                                </span>
+                                Mobilidade
+                            </label>
+
+                            <input class="" type="checkbox" name="categoria[]" value="movel" id="m_movel" hidden />
+                            <label class="flex items-center gap-2 cursor-pointer text-lg mt-1" for="m_movel">
+                                <span class="unchecked-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-square text-bluett" viewBox="0 0 16 16">
+                                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+                                    </svg>
+                                </span>
+                                <span class="checked-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square text-greentt" viewBox="0 0 16 16">
+                                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+                                        <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z" />
+                                    </svg>
+                                </span>
+                                Movel
+                            </label>
+
+                            <input class="" type="checkbox" name="categoria[]" value="roupa" id="m_roupa" hidden />
+                            <label class="flex items-center gap-2 cursor-pointer text-lg mt-1" for="m_roupa">
+                                <span class="unchecked-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-square text-bluett" viewBox="0 0 16 16">
+                                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+                                    </svg>
+                                </span>
+                                <span class="checked-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square text-greentt" viewBox="0 0 16 16">
+                                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+                                        <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z" />
+                                    </svg>
+                                </span>
+                                Roupa
+                            </label>
+
+                            <input class="" type="checkbox" name="categoria[]" value="outro" id="m_outro" hidden />
+                            <label class="flex items-center gap-2 cursor-pointer text-lg mt-1" for="m_outro">
+                                <span class="unchecked-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-square text-bluett" viewBox="0 0 16 16">
+                                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+                                    </svg>
+                                </span>
+                                <span class="checked-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square text-greentt" viewBox="0 0 16 16">
+                                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+                                        <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z" />
+                                    </svg>
+                                </span>
+                                Outro
+                            </label>
+                            <hr class="h-px w-full bg-black border-2 border-black mb-4 mt-4">
+                        </div>
+
+                        <div class="flex flex-col items-start px-4 text-lg text-left">
+                            <p class="font-semibold">Condição:</p>
+                            <input class="" type="checkbox" name="condicao[]" value="novo" id="m_novo" hidden />
+                            <label class="flex items-center gap-2 cursor-pointer text-lg mt-1" for="m_novo">
+                                <span class="unchecked-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-square text-bluett" viewBox="0 0 16 16">
+                                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+                                    </svg>
+                                </span>
+                                <span class="checked-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square text-greentt" viewBox="0 0 16 16">
+                                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+                                        <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z" />
+                                    </svg>
+                                </span>
+                                Novo
+                            </label>
+
+                            <input class="" type="checkbox" name="condicao[]" value="seminovo" id="m_seminovo" hidden />
+                            <label class="flex items-center gap-2 cursor-pointer text-lg mt-1" for="m_seminovo">
+                                <span class="unchecked-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-square text-bluett" viewBox="0 0 16 16">
+                                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+                                    </svg>
+                                </span>
+                                <span class="checked-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square text-greentt" viewBox="0 0 16 16">
+                                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+                                        <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z" />
+                                    </svg>
+                                </span>
+                                Seminovo
+                            </label>
+
+                            <input class="" type="checkbox" name="condicao[]" value="usado" id="m_usado" hidden />
+                            <label class="flex items-center gap-2 cursor-pointer text-lg mt-1" for="m_usado">
+                                <span class="unchecked-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-square text-bluett" viewBox="0 0 16 16">
+                                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+                                    </svg>
+                                </span>
+                                <span class="checked-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square text-greentt" viewBox="0 0 16 16">
+                                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+                                        <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z" />
+                                    </svg>
+                                </span>
+                                Usado
+                            </label>
+                            <hr class="h-px w-full bg-black border-2 border-black mb-4 mt-4">
+                        </div>
+
+
+                        <div class="flex flex-col items-start px-4 text-lg text-left mb-5">
+                            <p class="font-semibold">Localidade:</p>
+                            <input class="" type="checkbox" name="local[]" value="minha cidade" id="m_minha_cidade" hidden />
+                            <label class="flex items-center gap-2 cursor-pointer text-lg mt-1" for="m_minha_cidade">
+                                <span class="unchecked-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-square text-bluett" viewBox="0 0 16 16">
+                                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+                                    </svg>
+                                </span>
+                                <span class="checked-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square text-greentt" viewBox="0 0 16 16">
+                                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+                                        <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z" />
+                                    </svg>
+                                </span>
+                                Minha cidade
+                            </label>
+
+                            <input class="" type="checkbox" name="local[]" value="meu estado" id="m_meu_estado" hidden />
+                            <label class="flex items-center gap-2 cursor-pointer text-lg mt-1" for="m_meu_estado">
+                                <span class="unchecked-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-square text-bluett" viewBox="0 0 16 16">
+                                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+                                    </svg>
+                                </span>
+                                <span class="checked-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square text-greentt" viewBox="0 0 16 16">
+                                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+                                        <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z" />
+                                    </svg>
+                                </span>
+                                Meu estado
+                            </label>
+                            <hr class="h-px w-full bg-black border-2 border-black mb-2 mt-4">
+                        </div>
+                        <div class="flex w-full justify-around pb-3">
+                            <button type="reset" class="inline-flex items-center justify-center w-fit sm:w-auto px-4 py-2 bg-pinktt hover:bg-pinktt-dark shadow-tt text-white text-xs sm:text-sm md:text-base lg:text-lg font-medium rounded-2xl transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-110 duration-300">
+                                Limpar Filtros
+                            </button>
+                            <button type="submit" class="inline-flex items-center justify-center w-fit sm:w-auto px-4 py-2 bg-greentt hover:bg-greentt-dark shadow-tt text-white text-xs sm:text-sm md:text-base lg:text-lg font-medium rounded-2xl transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-110 duration-300">
+                                Aplicar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            
             <a href="{{ route('meusartigos') }}">
                 <ul class="w-full border-b border-graytt-dark flex flex-row py-5 items-center hover:bg-gray-200"><svg class="h-8 w-8 mr-3" version="1.0" xmlns="http://www.w3.org/2000/svg" width="256.000000pt" height="256.000000pt" viewBox="0 0 256.000000 256.000000" preserveAspectRatio="xMidYMid meet">
                         <g transform="translate(0.000000,256.000000) scale(0.100000,-0.100000)" fill="#000000" stroke="none">
@@ -207,16 +387,16 @@
         <ul class="md:underline-animation hidden md:block"><a href="{{ route('meusacordos') }}">Meus Acordos</a></ul>
         <ul class="md:underline-animation hidden md:block"><a href="{{ route('mep') }}">Mensagens e Propostas</a></ul>
         <ul class="md:underline-animation hidden md:block"><a href="{{ route('about') }}">Quem Somos</a></ul>
-        
+
         <form action="{{ route('search') }}" method="get" class="md:hidden">
             <div class="w-96 rounded-full flex bg-white items-center ps-5 md:hidden border-2 h-8">
                 <input type="text" name="search" onsubmit="event.preventDefault(); document.getElementById('searchbar').submit();" id="pesquisa" class="h-7 w-full outline-0">
                 <button>
-                <span class="flex items-center p-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                </span>
+                    <span class="flex items-center p-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </span>
                 </button>
             </div>
         </form>

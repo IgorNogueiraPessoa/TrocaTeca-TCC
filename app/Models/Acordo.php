@@ -16,6 +16,8 @@ class Acordo extends Model
         'anuncio',
         'data_encontro',
         'local_encontro',
+        'pontoe_lat',
+        'pontoe_lon',
         'categoria_acordo',
         'imagem_acordo',
         'status_acordo',
