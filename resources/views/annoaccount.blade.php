@@ -63,7 +63,7 @@
                         @foreach($artigos as $artg)
                         <div class="group my-1 flex w-full max-w-[260px] flex-col overflow-hidden justify-center items-center place-content-center rounded-xl border border-graytt-light shadow-tt bg-white transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-110 duration-300">
                             <a href="/viewannounce/{{$artg->id}}">
-                                <div class="relative flex flex-col items-center mx-3 mt-3 flex w-48 h-48 overflow-hidden rounded-xl border-2 border-black">
+                                <div class="relative mx-3 mt-3 flex h-48 overflow-hidden rounded-xl border-2 border-black">
                                     @foreach($artg->imagens as $imagem)
                                     @if($imagem->imagem_principal)
                                     <img class="peer absolute top-0 right-0 h-full w-full object-cover" src="{{ asset($imagem->endereco_imagem) }}" alt="{{ $artg->nome_artigo }}">

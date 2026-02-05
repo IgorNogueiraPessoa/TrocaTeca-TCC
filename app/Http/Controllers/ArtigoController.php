@@ -299,24 +299,41 @@ class ArtigoController extends Controller
         return redirect()->to('/meusartigos');
     }
 
-    /*ver dados do artigo do usuário ofertante*/
-    public function viewAnnounce($id_artigo, Request $req, $denun_id = NULL)
-    {
-        $artigo = Artigo::with(['imagens', 'user'])->findOrFail($id_artigo);
 
-        $meusartigos = Artigo::where('id_usuario_ofertante', $req->user()->id)
+
+
+    /*ver dados do artigo do usuário ofertante*/
+public function viewAnnounce($id_artigo, Request $req, $denun_id = NULL)
+{
+    // Carrega o artigo
+    $artigo = Artigo::with(['imagens', 'user'])->findOrFail($id_artigo);
+
+    // Pega o usuário logado (ou null)
+    $usuario = $req->user();
+
+    // Se estiver logado, busca os artigos dele
+    if ($usuario) {
+        $meusartigos = Artigo::where('id_usuario_ofertante', $usuario->id)
             ->whereDoesntHave('proposta', function ($query) {
                 $query->whereHas('acordo', function ($query) {
-                    $query->where('status_acordo', 4); // Excluir artigos com acordos bem-sucedidos
+                    $query->where('status_acordo', 4);
                 });
-            })->with('imagens')->get();
-
-
-        if (isset($denun_id))
-            return view('adm.viewannounce', compact('artigo', 'denun_id'));
-
-        return view('viewannounce', compact('artigo', 'meusartigos'));
+            })
+            ->with('imagens')
+            ->get();
+    } else {
+        // Visitante → não possui "meus artigos"
+        $meusartigos = collect([]);
     }
+
+    // Página de admin
+    if ($denun_id) {
+        return view('adm.viewannounce', compact('artigo', 'denun_id'));
+    }
+
+    return view('viewannounce', compact('artigo', 'meusartigos'));
+}
+
 
     public function filter(Request $req)
     {

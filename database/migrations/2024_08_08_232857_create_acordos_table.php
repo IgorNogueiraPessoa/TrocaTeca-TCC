@@ -21,6 +21,9 @@ return new class extends Migration
             $table->String('imagem_acordo');
             $table->tinyInteger('status_acordo');
             $table->timestamps();
+            $table->decimal('pontoe_lat', 10, 7)->nullable();
+            $table->decimal('pontoe_lon', 10, 7)->nullable();
+
         });
     }
 
